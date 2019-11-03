@@ -1,0 +1,11 @@
+@import 'mini.css';
+
+th {
+    line-height: 1em;
+    color:black
+}
+
+.full-height {
+    height: 90vh;
+    max-height: 90vh;
+}
