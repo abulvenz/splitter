@@ -1,6 +1,9 @@
-import m from 'mithril';
+// jshint esversion: 6  
 
+
+import m from 'mithril';
 import tagl from 'tagl-mithril';
+
 
 // prettier-ignore
 const { address, aside, footer, header, h1, h2, h3, h4, h5, h6, hgroup, main, nav, section, article, blockquote, dd, dir, div, dl, dt, figcaption, figure, hr, li, ol, p, pre, ul, a, abbr, b, bdi, bdo, br, cite, code, data, dfn, em, i, kdm, mark, q, rb, rp, rt, rtc, ruby, s, samp, small, span, strong, sub, sup, time, tt, u, wbr, area, audio, img, map, track, video, embed, iframe, noembed, object, param, picture, source, canvas, noscript, script, del, ins, caption, col, colgroup, table, tbody, td, tfoot, th, thead, tr, button, datalist, fieldset, form, formfield, input, label, legend, meter, optgroup, option, output, progress, select, textarea, details, dialog, menu, menuitem, summary, content, element, slot, template } = tagl(m);
@@ -42,12 +45,22 @@ const spending = (userName, idx) => byName(userName).spendings[idx] || 0.0;
 
 const sum = userName => byName(userName).spendings.reduce((a,b)=>a+b,0);
 
+const totalSum=() =>roundTwoDigits( _data.users.map(user=>sum(user.name)).reduce((a,b)=>a+b,0));
 
 const roundTwoDigits = num => Math.round(num*100) / 100;
 
+const pay = userName => sum(userName) - totalSum() / (_data.users.length || 1);
+
+const use = (v,fn)=>fn(v);
+
 m.mount(document.body, {
     view: vnode => [
-        h1('Splitter'),
+        h1('Splitter' ,              button.small({onclick:e=>{
+            _data.users=[];
+        }},'clear'),
+        small(
+            totalSum()
+        )),
         hr(),
         input({
             value: newUserInput.name,
@@ -66,7 +79,12 @@ m.mount(document.body, {
                 ),
                 tr(),
                 tr(
-                    _data.users.map(user=>roundTwoDigits(sum(user.name))).map(sum=>td(sum))
+                    _data.users.map(user=>roundTwoDigits(sum(user.name))).map(sum=>td.total(sum))
+                ),
+                tr(
+                    _data.users.map(user=>use(roundTwoDigits(pay(user.name)), pay => 
+                    td[{true:'positive',false:'negative'}[pay > 0]](pay)))
+                
                 ),
                 tr(
                     _data.users.map(user =>
@@ -93,5 +111,10 @@ m.mount(document.body, {
                 )
             )
         ),
-    ],
+        textarea({value: JSON.stringify(_data.users,null,2),oninput: e => {
+          let dat = JSON.parse(e.target.value);
+          _data.users = dat;
+        } })
+    ]
+    
 });

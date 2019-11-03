@@ -6,6 +6,17 @@ th {
 }
 
 .full-height {
-    height: 90vh;
     max-height: 90vh;
+}
+
+.total {
+    background-color: darkkhaki
+}
+
+.positive {
+    background-color: forestgreen;
+}
+
+.negative {
+    background-color:red;
 }
