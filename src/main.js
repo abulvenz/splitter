@@ -21,6 +21,23 @@ const mapArray = (collection, fn = e=>e) => {
     return result;
 };
 
+function b64EncodeUnicode(str) {
+    // first we use encodeURIComponent to get percent-encoded UTF-8,
+    // then we convert the percent encodings into raw bytes which
+    // can be fed into btoa.
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+        function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1);
+    }));
+}
+
+function b64DecodeUnicode(str) {
+    // Going backwards: from bytestream, to percent-encoding, to original string.
+    return decodeURIComponent(atob(str).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+}
+
 const contains = (arr, e) => arr.indexOf(e) >= 0;
 const use = (v,fn) => fn(v);
 const roundTwoDigits = num => Math.round(num*100) / 100;
@@ -30,9 +47,18 @@ const _data = JSON.parse(localStorage.getItem('data')) || {
     users: [],
     expenses: [],
 };
+
+
+console.log(window.location.search)
+const updateURL = () => {
+    window.location.search = m.buildQueryString({data: b64EncodeUnicode(JSON.stringify(_data))})
+    return true;
+};
+
+ 
 const users = () => _data.users;
 const expenses = () => _data.expenses;
-const sync = () => localStorage.setItem('data', JSON.stringify(_data));
+const sync = () =>updateURL()&& localStorage.setItem('data', JSON.stringify(_data));
 
 const newUserInput = {
     name: '',
@@ -65,7 +91,17 @@ const addExpense = () => {
         users: {}
     });
     sync();
+    show = !show;
 };
+
+
+let queryData = m.parseQueryString(window.location.search);
+
+if (!!queryData['data']) {
+    Object.assign(_data,
+        JSON.parse(b64DecodeUnicode(queryData.data))
+    );
+}
 
 const nextExpense = {
     title: '',
@@ -78,21 +114,37 @@ const currencies = [
     '$','€','¥','£'
 ];
 
+let show = true;
+
+const showExpenser = () => show = !show;
+
 m.mount(document.body, {
     view: vnode => [
-        h1('Splitter' ,              
+
+        [
+            div.row(
+            m("div", {"class":"col-sm-8"},
+            
+            h1('Splitter' ,              
             button.small({onclick:e=> (_data.users = [], _data.expenses = [])},'clear'),
             select({oninput: e=>(_data.currency=e.target.value, sync())},
             currencies.map(c=>option(c))
         ),small(totalSum())),
+
+            ), 
+            m("div", {"class":"col-sm-4"},
+            input({
+                value: newUserInput.name,
+                oninput: e => (newUserInput.name = e.target.value),
+            }),
+            button({onclick: e => addUser(newUserInput.name) && (newUserInput.name = '')}, 'Add User')
+            ))
+          ],
+
         
         hr(),
-        input({
-            value: newUserInput.name,
-            oninput: e => (newUserInput.name = e.target.value),
-        }),
-        button({onclick: e => addUser(newUserInput.name) && (newUserInput.name = '')}, 'Add User'),
-        table.fullHeight(
+        
+        show?  div.w3AnimateRight([table.fullHeight(
             thead(tr(th(),users().map(user => th(user.name)))),
             tbody(
                 expenses().map(
@@ -109,12 +161,21 @@ m.mount(document.body, {
 //                tr(td({colspan: users().length}, ))
             )
         ),
-        [
+        button.primary({
+            onclick:e=>{
+                showExpenser();
+            }
+        }, '+')])
+        :div.w3AnimateLeft([
+            label('What?'),
             input({placeHolder:'Expense', value: nextExpense.title, oninput: e=>nextExpense.title=e.target.value}),
+            label('How much?'),
             input({type:'number', value: nextExpense.amount, oninput: e=>nextExpense.amount=parseFloat(e.target.value)}),
+            label('Who payed it?'),
             select({value: nextExpense.user,oninput:e => nextExpense.user = e.target.value},
                 users().map(user=>option(user.name))
             ),
+            label('Who enjoyed it?'),
             div.buttonGroup(
                 users().map(user=>button[{true:'inverse', false:''}[!!nextExpense.users[user.name]]]({onclick:e=>nextExpense.users[user.name]=!nextExpense.users[user.name]},user.name))
             ),
@@ -123,12 +184,19 @@ m.mount(document.body, {
                     addExpense();
                 }
             }, '+'),
+
+        ]),
+        [
+/*,*/            ,
+
             br()
         ],
-        textarea({value: JSON.stringify(_data, null, 2), oninput: e => {
+        /*textarea({value: JSON.stringify(_data, null, 2), oninput: e => {
           let dat = JSON.parse(e.target.value);
          Object.assign(_data,dat);
-        } })
+        } }),*/
+        [ 
+        ]
     ]
     
 });
