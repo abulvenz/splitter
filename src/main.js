@@ -185,7 +185,7 @@ m.mount(document.body, {
                             t.getLanguages().map(c => option(c))
                         )),
                 ),
-                m("div", { "class": "col-md-6 col-sm-12" },
+                m("div", { "class": "col-md-6 col-sm-12 mt15" },
                     input({
                         placeHolder:t('John Doe'),
                         value: newUserInput.name,
@@ -255,6 +255,7 @@ m.mount(document.body, {
                 }, '+'),
             ]),
     ]),
+    hr(),
     div.container(
         div.row(
             div['col-md-2'](span({"class":"icon-share"}),t('Share the current state by copying this link.')),

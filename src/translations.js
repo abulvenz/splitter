@@ -13,7 +13,8 @@ const translations = {
     'How much?':'Wie teuer war`s?',
     'Who payed it?':'Wer hat`s bezahlt?',
     'Who enjoyed it?':'Wer waren die Nutznießer?',
-    'Copied!':'Kopiert!'
+    'Copied!':'Kopiert!',
+    'John Doe':'Max Mustermann'
   }
 };
 

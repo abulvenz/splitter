@@ -1,8 +1,16 @@
 @import 'mini.css';
 
-th {
+/*th {
     line-height: 1em;
     color: black;
+}*/
+
+.mt15 {
+    margin-top: 15px;
+}
+
+body {
+    background-color: lavender
 }
 
 .full-height {
