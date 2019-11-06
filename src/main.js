@@ -1,6 +1,7 @@
 // jshint esversion: 6  
 import m from 'mithril';
 import tagl from 'tagl-mithril';
+import t from './translations';
 
 // prettier-ignore
 const { address, aside, footer, header, h1, h2, h3, h4, h5, h6, hgroup, main, nav, section, article, blockquote, dd, dir, div, dl, dt, figcaption, figure, hr, li, ol, p, pre, ul, a, abbr, b, bdi, bdo, br, cite, code, data, dfn, em, i, kdm, mark, q, rb, rp, rt, rtc, ruby, s, samp, small, span, strong, sub, sup, time, tt, u, wbr, area, audio, img, map, track, video, embed, iframe, noembed, object, param, picture, source, canvas, noscript, script, del, ins, caption, col, colgroup, table, tbody, td, tfoot, th, thead, tr, button, datalist, fieldset, form, formfield, input, label, legend, meter, optgroup, option, output, progress, select, textarea, details, dialog, menu, menuitem, summary, content, element, slot, template } = tagl(m);
@@ -103,6 +104,8 @@ if (!!queryData['data']) {
     );
 }
 
+t.setLanguage(_data.language)
+
 const nextExpense = {
     title: '',
     amount: 0.0,
@@ -117,24 +120,77 @@ const currencies = [
 let show = true;
 
 const showExpenser = () => show = !show;
+let result = '';
+
+function selectText(containerid) {
+    result = '';
+    if (document.selection) { // IE
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(containerid));
+        range.select();
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(containerid));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    }
+    try {
+        var ok = document.execCommand('copy');
+        if (ok) result = t('Copied!');
+        else result = t('Unable to copy!');
+    } catch (err) {
+        result = t('Unsupported Browser!');
+    }
+    setTimeout(() => { result = ''; m.redraw(); }, 2000)
+}
+
+
+const removeExpense = idx => {
+    _data.expenses.splice(idx, 1);
+};
+
+const whenHovered = () => {
+    let hovered = false;
+    return {
+        view: vnode => {
+            const { a, b } = vnode.attrs;
+            return div({
+                onmouseenter: e => {
+                    console.log(e)
+                    hovered = true;
+                },
+                onmouseleave: e => {
+                    console.log(e)
+                    hovered = false;
+                }
+            },
+                hovered ? a : b
+            );
+        }
+    }
+};
 
 m.mount(document.body, {
-    view: vnode => [
+    view: vnode => [div.container([
         [
             div.row(
-                m("div", { "class": "col-sm-8" },
+                m("div", { "class": "col-md-6 col-sm-12" },
                     h1('Splitter',
-                        button.small({ onclick: e => (_data.users = [], _data.expenses = []) }, 'clear'),
-                        select({ value:_data.currency, oninput: e => (_data.currency = e.target.value, sync()) },
+                        button.small({ onclick: e => (_data.users = [], _data.expenses = []) }, t('clear')),
+                        span.small(totalSum()),
+                        select({ value: _data.currency, oninput: e => (_data.currency = e.target.value, sync()) },
                             currencies.map(c => option(c))
-                        ), small(totalSum())),
+                        ),
+                        select({ value: _data.language, oninput: e => {_data.language = e.target.value; t.setLanguage(e.target.value); sync();} },
+                            t.getLanguages().map(c => option(c))
+                        )),
                 ),
-                m("div", { "class": "col-sm-4" },
+                m("div", { "class": "col-md-6 col-sm-12" },
                     input({
                         value: newUserInput.name,
                         oninput: e => (newUserInput.name = e.target.value),
                     }),
-                    button({ onclick: e => addUser(newUserInput.name) && (newUserInput.name = '') }, 'Add User')
+                    button({ onclick: e => addUser(newUserInput.name) && (newUserInput.name = '') }, t('Add User'))
                 ))
         ],
         hr(),
@@ -143,15 +199,26 @@ m.mount(document.body, {
                 thead(tr(th(), users().map(user => th(user.name)))),
                 tbody(
                     expenses().map(
-                        expense => tr({ 'data-label': expense.title },
-                            td(expense.title, '(', expense.amount, _data.currency, ')'),
+                        (expense, idx) => tr({ 'data-label': expense.title },
+                            td(m(whenHovered, {
+                                key: idx,
+                                b: [
+                                    expense.title,
+                                    '(', expense.amount, _data.currency, ')'
+                                ],
+                                a: button.small.secondary({
+                                    onclick: e => removeExpense(idx)
+                                }, m.trust('&times;'))
+                            })),
                             users()
                                 .map(user => user.name)
-                                .map(userName => td({ 'data-label': userName }, roundTwoDigits(spending(userName, expense))))
+                                .map(userName => td({ 'data-label': userName }, roundTwoDigits(spending(userName, expense)))),
                         )
                     ),
-                    tr(td(b('Sum')),
-                        users().map(user => use(roundTwoDigits(sum(user.name)), sum => td[{ true: 'positive', false: 'negative' }[sum > 0]](sum, _data.currency)))
+                    tr(td(b(t('Sum'))),
+                        users().map(user => use(roundTwoDigits(sum(user.name)), sum => td[
+                            { true: 'positive', false: 'negative' }[sum > 0]
+                        ]({ 'data-label': user.name }, sum, _data.currency)))
                     )
                     //                tr(td({colspan: users().length}, ))
                 )
@@ -162,15 +229,18 @@ m.mount(document.body, {
                 }
             }, '+')])
             : div.w3AnimateLeft([
-                label('What?'),
-                input({ placeHolder: 'Expense', value: nextExpense.title, oninput: e => nextExpense.title = e.target.value }),
-                label('How much?'),
+                label(t('What?')),
+                input({ placeHolder: t('Expense'), value: nextExpense.title, oninput: e => nextExpense.title = e.target.value }),
+                br(),
+                label(t('How much?')),
                 input({ type: 'number', value: nextExpense.amount, oninput: e => nextExpense.amount = parseFloat(e.target.value) }),
-                label('Who payed it?'),
+                br(),
+                label(t('Who payed it?')),
                 select({ value: nextExpense.user, oninput: e => nextExpense.user = e.target.value },
                     users().map(user => option(user.name))
                 ),
-                label('Who enjoyed it?'),
+                br(),
+                label(t('Who enjoyed it?')),
                 div.buttonGroup(
                     users().map(user => button[{ true: 'inverse', false: '' }[!!nextExpense.users[user.name]]]({ onclick: e => nextExpense.users[user.name] = !nextExpense.users[user.name] }, user.name))
                 ),
@@ -182,19 +252,22 @@ m.mount(document.body, {
                         addExpense();
                     }
                 }, '+'),
-
             ]),
-        [
-/*,*/,
-
-            br()
-        ],
-        /*textarea({value: JSON.stringify(_data, null, 2), oninput: e => {
-          let dat = JSON.parse(e.target.value);
-         Object.assign(_data,dat);
-        } }),*/
-        [
-        ]
+    ]),
+    div.container(
+        div.row(
+            div['col-md-2'](t('Share the current state by copying this link.')),
+            div['col-md-7 col-sm-12'](
+                pre.overflowHidden.$linktext(window.location.href),
+                t('The link will change with each change you make.'),
+                result ? div.toast(result) : null
+            ),
+            div['col-md-3'](
+                button({
+                    onclick: e => selectText('linktext')
+                }, t('Select link')),
+            ),
+        )
+    )
     ]
-
 });

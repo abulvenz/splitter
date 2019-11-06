@@ -4,8 +4,12 @@
     "build": "parcel build --public-url https://abulvenz.github.io/splitter -d docs index.html"
   },
   "dependencies": {
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.4.1",
     "mini.css": "^3.0.1",
     "mithril": "^2.0.4",
+    "normalize.css": "^8.0.1",
+    "popper.js": "^1.16.0",
     "tagl-mithril": "^1.0.4"
   }
 }
