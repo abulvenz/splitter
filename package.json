@@ -11,5 +11,8 @@
     "normalize.css": "^8.0.1",
     "popper.js": "^1.16.0",
     "tagl-mithril": "^1.0.4"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10"
   }
 }
