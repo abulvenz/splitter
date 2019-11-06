@@ -68,7 +68,7 @@ const newUserInput = {
 const expenseForUser = (expense, user) => - ((expense.user === user ? -expense.amount : 0.0) + (contains(expense.users, user) ? expense.amount / expense.users.length : 0.0));
 const spending = (userName, expense) => expenseForUser(expense, userName) || 0.0;
 const sum = userName => expenses().map(expense => expenseForUser(expense, userName)).reduce((a, b) => a + b, 0);
-const totalSum = () => roundTwoDigits(users().map(user => sum(user.name)).reduce((a, b) => a + b, 0));
+const totalSum = () => roundTwoDigits(expenses().map(expense => expense.amount).reduce((a, b) => a + b, 0));
 
 const addUser = name => {
     users().push({

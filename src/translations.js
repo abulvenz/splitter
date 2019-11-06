@@ -12,7 +12,8 @@ const translations = {
     'Expense':'Ausgabenbeschreibung',
     'How much?':'Wie teuer war`s?',
     'Who payed it?':'Wer hat`s bezahlt?',
-    'Who enjoyed it?':'Wer waren die Nutznießer?'
+    'Who enjoyed it?':'Wer waren die Nutznießer?',
+    'Copied!':'Kopiert!'
   }
 };
 
