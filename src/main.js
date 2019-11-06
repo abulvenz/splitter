@@ -174,6 +174,9 @@ m.mount(document.body, {
                 div.buttonGroup(
                     users().map(user => button[{ true: 'inverse', false: '' }[!!nextExpense.users[user.name]]]({ onclick: e => nextExpense.users[user.name] = !nextExpense.users[user.name] }, user.name))
                 ),
+                button.secondary({
+                    onclick: e => showExpenser()
+                }, m.trust('&times;')),
                 button.tertiary({
                     onclick: e => {
                         addExpense();
