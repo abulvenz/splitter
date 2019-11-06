@@ -187,10 +187,11 @@ m.mount(document.body, {
                 ),
                 m("div", { "class": "col-md-6 col-sm-12" },
                     input({
+                        placeHolder:t('John Doe'),
                         value: newUserInput.name,
                         oninput: e => (newUserInput.name = e.target.value),
                     }),
-                    button({ onclick: e => addUser(newUserInput.name) && (newUserInput.name = '') }, t('Add User'))
+                    button({ onclick: e => addUser(newUserInput.name) && (newUserInput.name = '') }, span({"class":"icon-user"}), t('Add User'))
                 ))
         ],
         hr(),
@@ -227,13 +228,13 @@ m.mount(document.body, {
                 onclick: e => {
                     showExpenser();
                 }
-            }, '+')])
+            },  span({"class":"icon-cart"}),'+')])
             : div.w3AnimateLeft([
                 label(t('What?')),
                 input({ placeHolder: t('Expense'), value: nextExpense.title, oninput: e => nextExpense.title = e.target.value }),
                 br(),
                 label(t('How much?')),
-                input({ type: 'number', value: nextExpense.amount, oninput: e => nextExpense.amount = parseFloat(e.target.value) }),
+                input({ type: 'number', value: nextExpense.amount, oninput: e => nextExpense.amount = parseFloat(e.target.value) }),_data.currency,
                 br(),
                 label(t('Who payed it?')),
                 select({ value: nextExpense.user, oninput: e => nextExpense.user = e.target.value },
@@ -256,7 +257,7 @@ m.mount(document.body, {
     ]),
     div.container(
         div.row(
-            div['col-md-2'](t('Share the current state by copying this link.')),
+            div['col-md-2'](span({"class":"icon-share"}),t('Share the current state by copying this link.')),
             div['col-md-7 col-sm-12'](
                 pre.overflowHidden.$linktext(window.location.href),
                 t('The link will change with each change you make.'),

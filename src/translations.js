@@ -6,7 +6,7 @@ const translations = {
     'Add User':'Neuer Nutzer',
     'Sum':'Summe',
     'Select link':'Link kopieren',
-    'Share the current state by copying this link.':'Teile den aktuellen Stand durch kopieren dieses Links.',
+    'Share the current state by copying this link.':'Teile den aktuellen Stand durch Kopieren dieses Links.',
     'The link will change with each change you make.':'Der Link ändert sich bei jeder Änderung der Daten.',
     'What?':'Was?',
     'Expense':'Ausgabenbeschreibung',
