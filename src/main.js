@@ -181,17 +181,17 @@ m.mount(document.body, {
                         select({ value: _data.currency, oninput: e => (_data.currency = e.target.value, sync()) },
                             currencies.map(c => option(c))
                         ),
-                        select({ value: _data.language, oninput: e => {_data.language = e.target.value; t.setLanguage(e.target.value); sync();} },
+                        select({ value: _data.language, oninput: e => { _data.language = e.target.value; t.setLanguage(e.target.value); sync(); } },
                             t.getLanguages().map(c => option(c))
                         )),
                 ),
                 m("div", { "class": "col-md-6 col-sm-12 mt15" },
                     input({
-                        placeHolder:t('John Doe'),
+                        placeHolder: t('John Doe'),
                         value: newUserInput.name,
                         oninput: e => (newUserInput.name = e.target.value),
                     }),
-                    button({ onclick: e => addUser(newUserInput.name) && (newUserInput.name = '') }, span({"class":"icon-user"}), t('Add User'))
+                    button({ onclick: e => addUser(newUserInput.name) && (newUserInput.name = '') }, span({ "class": "icon-user" }), t('Add User'))
                 ))
         ],
         hr(),
@@ -201,19 +201,23 @@ m.mount(document.body, {
                 tbody(
                     expenses().map(
                         (expense, idx) => tr({ 'data-label': expense.title },
-                            td(m(whenHovered, {
-                                key: idx,
-                                b: [
-                                    expense.title,
-                                    '(', expense.amount, _data.currency, ')'
-                                ],
-                                a: button.small.secondary({
-                                    onclick: e => removeExpense(idx)
-                                }, m.trust('&times;'))
-                            })),
+                            td(
+                                m(whenHovered, {
+                                    key: idx,
+                                    b: [
+                                        expense.title,
+                                        '(', expense.amount, _data.currency, ')'
+                                    ],
+                                    a: button.small.secondary({
+                                        onclick: e => removeExpense(idx)
+                                    }, m.trust('&times;'))
+                                })),
                             users()
                                 .map(user => user.name)
-                                .map(userName => td({ 'data-label': userName }, roundTwoDigits(spending(userName, expense)))),
+                                .map(userName => td(
+                                    { 'data-label': userName },
+                                    roundTwoDigits(spending(userName, expense))
+                                )),
                         )
                     ),
                     tr(td(b(t('Sum'))),
@@ -228,13 +232,13 @@ m.mount(document.body, {
                 onclick: e => {
                     showExpenser();
                 }
-            },  span({"class":"icon-cart"}),'+')])
+            }, span({ "class": "icon-cart" }), '+')])
             : div.w3AnimateLeft([
                 label(t('What?')),
                 input({ placeHolder: t('Expense'), value: nextExpense.title, oninput: e => nextExpense.title = e.target.value }),
                 br(),
                 label(t('How much?')),
-                input({ type: 'number', value: nextExpense.amount, oninput: e => nextExpense.amount = parseFloat(e.target.value) }),_data.currency,
+                input({ type: 'number', value: nextExpense.amount, oninput: e => nextExpense.amount = parseFloat(e.target.value) }), _data.currency,
                 br(),
                 label(t('Who payed it?')),
                 select({ value: nextExpense.user, oninput: e => nextExpense.user = e.target.value },
@@ -258,7 +262,7 @@ m.mount(document.body, {
     hr(),
     div.container(
         div.row(
-            div['col-md-2'](span({"class":"icon-share"}),t('Share the current state by copying this link.')),
+            div['col-md-2'](span({ "class": "icon-share" }), t('Share the current state by copying this link.')),
             div['col-md-7 col-sm-12'](
                 pre.overflowHidden.$linktext(window.location.href),
                 t('The link will change with each change you make.'),
