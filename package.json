@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "mini.css": "^3.0.1",
     "mithril": "^2.0.4",
     "normalize.css": "^8.0.1",
