@@ -2,20 +2,24 @@
 
 const translations = {
   de: {
-    'clear': 'löschen',
-    'Add User':'Neuer Nutzer',
-    'Sum':'Summe',
-    'Select link':'Link kopieren',
-    'Share the current state by copying this link.':'Teile den aktuellen Stand durch Kopieren dieses Links.',
-    'The link will change with each change you make.':'Der Link ändert sich bei jeder Änderung der Daten.',
-    'What?':'Was?',
-    'Expense':'Ausgabenbeschreibung',
-    'How much?':'Wie teuer war`s?',
-    'Who payed it?':'Wer hat`s bezahlt?',
-    'Who enjoyed it?':'Wer waren die Nutznießer?',
-    'Copied!':'Kopiert!',
-    'John Doe':'Max Mustermann'
-  }
+    clear: "löschen",
+    "Add User": "Neuer Nutzer",
+    Sum: "Summe",
+    "Select link": "Link kopieren",
+    "Share the current state by copying this link.":
+      "Teile den aktuellen Stand durch Kopieren dieses Links.",
+    "The link will change with each change you make.":
+      "Der Link ändert sich bei jeder Änderung der Daten.",
+    "What?": "Was?",
+    Expense: "Ausgabenbeschreibung",
+    "How much?": "Wie teuer war`s?",
+    "Who payed it?": "Wer hat`s bezahlt?",
+    "Who enjoyed it?": "Wer waren die Nutznießer?",
+    "Copied!": "Kopiert!",
+    "John Doe": "Max Mustermann",
+    pays: "zahlt",
+    Split: "Teilen",
+  },
 };
 
 let isin = (arr, e) => arr.indexOf(e) >= 0;
@@ -35,7 +39,7 @@ function t(key) {
   }
 }
 
-t.setLanguage = lang => {
+t.setLanguage = (lang) => {
   language = lang;
 };
 

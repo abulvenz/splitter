@@ -1,4 +1,4 @@
-@import 'mini.css';
+@import '../node_modules/mini.css/dist/mini-default.css';
 /*th {
     line-height: 1em;
     color: black;
