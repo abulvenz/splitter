@@ -151,6 +151,38 @@ const strategies = [
 
       return result;
     },
+  },  {
+    name: "advanced",
+    description: t(
+      `The users are sorted by their sum of expenses. Starting with 
+       the least amount, the users will pay the next user in the list 
+       until the sum is 0. Note that this might potentially result in 
+       large transactions.`
+    ),
+    calculateTransactions: (expenses, users) => {
+      const result = [];
+      const startingPoint = sumForEachUser().sort((a, b) => 
+        (a.sum<0 && b.sum >0)||(a.sum>0 && b.sum <0)?a.sum-b.sum:b.sum-a.sum    
+      );
+
+      //  result.push(startingPoint);
+      startingPoint.forEach((userSum, i) => {
+        if (userSum.sum !== 0 && i < startingPoint.length - 1) {
+          result.push({
+            name: userSum.user.name,
+            transactions: [
+              {
+                receiver: startingPoint[i + 1].user.name,
+                amount: userSum.sum,
+              },
+            ],
+          });
+          startingPoint[i + 1].sum += userSum.sum;
+        }
+      });
+
+      return result;
+    },
   },
   {
     name: "largest bulk",
