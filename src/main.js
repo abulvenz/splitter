@@ -123,12 +123,7 @@ const addUser = (name) => {
 const strategies = [
   {
     name: "simple",
-    description: t(
-      `The users are sorted by their sum of expenses. Starting with 
-       the least amount, the users will pay the next user in the list 
-       until the sum is 0. Note that this might potentially result in 
-       large transactions.`
-    ),
+    description: ()=>t("description_simple"),
     calculateTransactions: (expenses, users) => {
       const result = [];
       const startingPoint = sumForEachUser().sort((a, b) => a.sum - b.sum);
@@ -153,12 +148,7 @@ const strategies = [
     },
   },  {
     name: "advanced",
-    description: t(
-      `The users are sorted by their sum of expenses. Starting with 
-       the least amount, the users will pay the next user in the list 
-       until the sum is 0. Note that this might potentially result in 
-       large transactions.`
-    ),
+    description: ()=>t("description_advanced"),
     calculateTransactions: (expenses, users) => {
       const result = [];
       const startingPoint = sumForEachUser().sort((a, b) => 
@@ -186,14 +176,7 @@ const strategies = [
   },
   {
     name: "largest bulk",
-    description: t(
-      `We try to reduce the amount 
-       of money within the transactions and create few transactions. It starts 
-       by paying of the most expensive user with the 
-       cheapest user. Then it will try to pay of the 
-       second most expensive user with the second cheapest 
-       user and so on. This will result in the least amount of transactions.`
-    ),
+    description: ()=>t("description_largest_bulk"),
     calculateTransactions: (expenses, users) => {
       const result = [];
       let party = sumForEachUser();
@@ -527,11 +510,11 @@ m.mount(document.body, {
     select(
       {
         value: _data.selectedStrategy,
-        oninput: (e) => (_data.selectedStrategy = e.target.value),
+        oninput: (e) => {_data.selectedStrategy = e.target.value;sync();},
       },
-      strategies.map((s) => option(s.name))
+      strategies.map((s) => option({value: s.name},t(s.name)))
     ),
-    p(strategyByName(_data.selectedStrategy).description),
+    p(strategyByName(_data.selectedStrategy).description()),
     _data.selectedStrategy
       ? strategyByName(_data.selectedStrategy)
           .calculateTransactions(expenses(), users())
