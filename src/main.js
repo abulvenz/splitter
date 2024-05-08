@@ -366,7 +366,7 @@ m.mount(document.body, {
             button(
               {
                 onclick: (e) =>
-                  addUser(newUserInput.name) && (newUserInput.name = ""),
+                  addUser(newUserInput.name.trim()) && (newUserInput.name = ""),
               },
               span({ class: "icon-user" }),
               t("Add User")
