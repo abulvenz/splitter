@@ -229,7 +229,7 @@ const strategyByName = (name) =>
 
 const addExpense = () => {
   expenses().push({
-    title: nextExpense.title,
+    title: nextExpense.title.trim(),
     amount: nextExpense.amount,
     user: nextExpense.user,
     users: Object.keys(nextExpense.users).filter((u) => nextExpense.users[u]),
