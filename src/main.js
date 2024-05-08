@@ -298,28 +298,6 @@ const removeExpense = (idx) => {
   _data.expenses.splice(idx, 1);
 };
 
-const whenHovered = () => {
-  let hovered = false;
-  return {
-    view: (vnode) => {
-      const { a, b } = vnode.attrs;
-      return div(
-        {
-          onmouseenter: (e) => {
-            console.log(e);
-            hovered = true;
-          },
-          onmouseleave: (e) => {
-            console.log(e);
-            hovered = false;
-          },
-        },
-        hovered ? a : b
-      );
-    },
-  };
-};
-
 m.mount(document.body, {
   view: (vnode) => [
     div.container([
@@ -381,37 +359,29 @@ m.mount(document.body, {
               thead(
                 tr(
                   th(),
-                  users().map((user) => th(user.name))
+                  users().map((user) => th(user.name)),
+                  th()
                 )
               ),
               tbody(
                 expenses().map((expense, idx) =>
                   tr(
                     { "data-label": expense.title },
-                    td(
-                      m(whenHovered, {
-                        key: idx,
-                        b: [
-                          expense.title,
-                          "(",
-                          expense.amount,
-                          _data.currency,
-                          ")",
-                        ],
-                        a: button.small.secondary(
-                          {
-                            onclick: (e) => removeExpense(idx),
-                          },
-                          m.trust("&times;")
-                        ),
-                      })
-                    ),
+                    td(expense.title, " (", expense.amount, _data.currency, ")"),
                     users()
                       .map((user) => user.name)
                       .map((userName) =>
                         td(
                           { "data-label": userName },
                           roundTwoDigits(spending(userName, expense))
+                        )
+                      ),
+                    td(
+                      button.small.secondary(
+                        {
+                          onclick: (e) => removeExpense(idx),
+                        },
+                        "×"
                         )
                       )
                   )
