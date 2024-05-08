@@ -107,6 +107,10 @@ const sumForEachUser = () =>
   users().map((user) => ({ user, sum: sum(user.name) }));
 
 const addUser = (name) => {
+  if (users().some((u) => u.name === name)) {
+    window.alert(t("User already exists: ") + name);
+    return false;
+  }
   users().push({
     name,
   });
