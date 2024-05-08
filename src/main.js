@@ -127,7 +127,7 @@ const addUser = (name) => {
 const strategies = [
   {
     name: "simple",
-    description: ()=>t("description_simple"),
+    description: () => t("description_simple"),
     calculateTransactions: (expenses, users) => {
       const result = [];
       const startingPoint = sumForEachUser().sort((a, b) => a.sum - b.sum);
@@ -150,13 +150,16 @@ const strategies = [
 
       return result;
     },
-  },  {
+  },
+  {
     name: "advanced",
-    description: ()=>t("description_advanced"),
+    description: () => t("description_advanced"),
     calculateTransactions: (expenses, users) => {
       const result = [];
-      const startingPoint = sumForEachUser().sort((a, b) => 
-        (a.sum<0 && b.sum >0)||(a.sum>0 && b.sum <0)?a.sum-b.sum:b.sum-a.sum    
+      const startingPoint = sumForEachUser().sort((a, b) =>
+        (a.sum < 0 && b.sum > 0) || (a.sum > 0 && b.sum < 0)
+          ? a.sum - b.sum
+          : b.sum - a.sum
       );
 
       //  result.push(startingPoint);
@@ -180,7 +183,7 @@ const strategies = [
   },
   {
     name: "largest bulk",
-    description: ()=>t("description_largest_bulk"),
+    description: () => t("description_largest_bulk"),
     calculateTransactions: (expenses, users) => {
       const result = [];
       let party = sumForEachUser();
@@ -190,6 +193,7 @@ const strategies = [
 
       while (!balanced() && steps++ < 10) {
         party.sort((a, b) => a.sum - b.sum);
+        console.log(party);
         const debtor = first(party);
         const debtee = last(party);
 
@@ -382,8 +386,8 @@ m.mount(document.body, {
                           onclick: (e) => removeExpense(idx),
                         },
                         "×"
-                        )
                       )
+                    )
                   )
                 ),
                 tr(
@@ -423,7 +427,8 @@ m.mount(document.body, {
             input({
               type: "number",
               value: nextExpense.amount,
-              oninput: (e) => (nextExpense.amount = parseFloat(e.target.value)),
+              oninput: (e) =>
+                (nextExpense.amount = parseFloat(e.target.value)),
             }),
             _data.currency,
             br(),
@@ -493,9 +498,12 @@ m.mount(document.body, {
     select(
       {
         value: _data.selectedStrategy,
-        oninput: (e) => {_data.selectedStrategy = e.target.value;sync();},
+        oninput: (e) => {
+          _data.selectedStrategy = e.target.value;
+          sync();
+        },
       },
-      strategies.map((s) => option({value: s.name},t(s.name)))
+      strategies.map((s) => option({ value: s.name }, t(s.name)))
     ),
     p(strategyByName(_data.selectedStrategy).description()),
     _data.selectedStrategy

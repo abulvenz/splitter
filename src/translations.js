@@ -30,6 +30,7 @@ const translations = {
     "John Doe": "Max Mustermann",
     pays: "zahlt",
     Split: "Teilen",
+    "User already exists: ": "Nutzer existiert bereits: ",
   },
 };
 
