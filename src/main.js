@@ -371,7 +371,13 @@ m.mount(document.body, {
                 expenses().map((expense, idx) =>
                   tr(
                     { "data-label": expense.title },
-                    td(expense.title, " (", expense.amount, _data.currency, ")"),
+                    td(
+                      expense.title,
+                      " (",
+                      expense.amount,
+                      _data.currency,
+                      ")"
+                    ),
                     users()
                       .map((user) => user.name)
                       .map((userName) =>
@@ -427,8 +433,7 @@ m.mount(document.body, {
             input({
               type: "number",
               value: nextExpense.amount,
-              oninput: (e) =>
-                (nextExpense.amount = parseFloat(e.target.value)),
+              oninput: (e) => (nextExpense.amount = parseFloat(e.target.value)),
             }),
             _data.currency,
             br(),

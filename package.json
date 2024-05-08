@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build --public-url https://abulvenz.github.io/splitter --dist-dir docs index.html"
+    "build": "rm -rf && parcel build --public-url https://abulvenz.github.io/splitter --dist-dir docs index.html"
   },
   "dependencies": {
     "mini.css": "^3.0.1",
