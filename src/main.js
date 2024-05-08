@@ -192,6 +192,15 @@ const strategies = [
         party.sort((a, b) => a.sum - b.sum);
         const debtor = first(party);
         const debtee = last(party);
+
+        if (party.length === 1) {
+          result.push({
+            name: debtor.user.name,
+            transactions: [],
+          });
+          break;
+        }
+
         let sofar =
           result.find((user) => user.name === debtor.user.name) ||
           last(
